@@ -1,6 +1,6 @@
 *** Settings ***
 Library             SeleniumLibrary
-Resource            ${EXECDIR}/libraries/common.robot
+Resource            ${EXEC_DIR}/libraries/common.robot
 
 Suite Setup         TRAN Setup
 #Suite Teardown      Close Browser
@@ -10,14 +10,12 @@ Suite Setup         TRAN Setup
 
 
 *** Variables ***
-${FILE_PATH}        ${EXECDIR}\\suites
+${FILE_PATH}        ${EXEC_DIR}\\suites
 
 *** Test Cases ***
-TC-TRAN-001 Login To Parabank
+TC-TRAN-001 Hello, World!
     Log To Console          \n\n Hello, world!
-    #${url}=     Set Variable        https://parabank.parasoft.com/parabank/index.htm
-    #Go To       ${url}
 
 *** Keywords ***
 TRAN Setup
-    Open Chrome Browser        https://parabank.parasoft.com/parabank/index.htm
+    Open Chrome Browser        ${PARABANK_URL}
