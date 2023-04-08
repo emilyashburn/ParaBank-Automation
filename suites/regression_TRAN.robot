@@ -15,6 +15,7 @@ ${FILE_PATH}        ${EXEC_DIR}\\suites
 *** Test Cases ***
 TC-TRAN-001 Hello, World!
     Log To Console          \n\n Hello, world!
+    log to console          \n\n learning PyCharm GIT
 
 *** Keywords ***
 TRAN Setup
