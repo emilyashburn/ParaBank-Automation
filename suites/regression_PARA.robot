@@ -5,8 +5,8 @@ Resource            ../libraries/common.robot
 Suite Setup         PARA Setup
 Suite Teardown      Close All Browsers
 
-Test Setup          Go To Parabank Login Page
-Test Teardown       Logout
+# Test Setup          Go To Parabank Login Page
+# Test Teardown       Logout
 
 *** Variables ***
 
