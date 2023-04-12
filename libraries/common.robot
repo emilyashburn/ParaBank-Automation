@@ -21,6 +21,8 @@ Open Chrome Browser
     Open Browser                        url=${url}      browser=chrome      options=${chrome_options}       executable_path=${chromedriverPath}
     Maximize Browser Window
 
+################# Logins #################
+
 Login As Admin
     Wait Until Element Is Visible       //h2[.="Customer Login"]
     Input Text                          //*[@name="username"]           ${ADMIN_USERNAME}
@@ -32,6 +34,8 @@ Logout
     Wait Until Element Is Visible       //a[.="Log Out"]
     Click Element                       //a[.="Log Out"]
     Wait Until Element Is Visible       //h2[.="Customer Login"]
+
+############### Navigation ###############
 
 Go To Page
     [Arguments]     ${option}
@@ -57,6 +61,8 @@ Go To Open New Account Page
 Go To Accounts Overview Page
     Click Element                       //a[.="Accounts Overview"]
     Wait Until Element Is Visible       //h1[.="Accounts Overview"]
+    #// There will ALWAYS be one account in the Overview, so wait until that third TR row loads in.
+    Wait Until Element Is Visible       //*[@id="accountTable"]//tr[3]//a
 
 Go To Transfer Funds Page
     Click Element                       //a[.="Transfer Funds"]
@@ -97,3 +103,67 @@ Go To Locations Page
 Go To Admin Page
     Click Element                      //*[@class="leftmenu"]//a[.="Admin Page"]
     Wait Until Element Is Visible       //h1[contains(.,"Administration")]
+
+########### Open New Accounts ############
+
+Open New Account
+    #// In order to make a new account, we need to know what type of an account to make.
+    #// We also need to pull $100 from an existing account.
+    [Arguments]     ${accountType}      ${existingAccount}
+    Select Account Type             ${accountType}
+    Select Option From Dropdown     //*[@id="fromAccountId"]        ${existingAccount}
+    ${newAccountId}=                Get Text                        //*[@id="newAccountId"]
+    ${newAccountUrl}=               Get Element Attribute           //*[@id="newAccountId"]@href
+    [Return]                        ${newAccountId}     ${newAccountUrl}
+
+Select Account Type
+    #// Two valid options: CHECKING or SAVINGS
+    [Arguments]     ${accountType}
+    Select Option From Dropdown     //*[@id="type"]     ${accountType}
+
+Select Option From Dropdown
+    [Arguments]     ${xpath}      ${option}
+    Wait and Click                      ${xpath}
+    Wait and Click                      ${xpath}//option[contains(.,"${option}")]
+    Wait Until Element Is Visible       ${xpath}//option[contains(.,"${option}")][@selected="selected"]
+
+Click Open New Account
+    Wait and Click                      //*[@type="submit"]
+    Wait Until Element Is Visible       //*[.="Account Opened!"]
+
+############ Accounts Overview ############
+
+Get Existing Account with More Than $100
+    Go To Accounts Overview Page
+    ${accountCount}=        Get Count of Existing Accounts
+    ${col}=     Table_Get Column Index      Available Amount        //*[@id="accountTable"]
+    FOR         ${i}      IN RANGE      1       ${accountCount}+1
+        Log to Console      \n Account place: ${i}
+    END
+    Log To Console          \n\n Column index: ${col}!!!!!!!!!!
+
+Get Count of Existing Accounts
+    ${accountCount}=        Get Element Count        //*[@id="accountTable"]//tr//a
+    [Return]                ${accountCount}
+
+################ Functions ################
+
+Wait and Click
+    [Arguments]     ${xpath}
+    Wait Until Element Is Visible       ${xpath}
+    Click Element                       ${xpath}
+
+Table_Get Column Index
+    [Arguments]     ${header}       ${tableId}
+    ${headerCount}=     Get Element Count       ${tableId}/thead/tr/th
+    ${headerIndex}=     Set Variable            -1
+    FOR     ${i}        IN RANGE        1       ${headerCount}+1
+        ${currHeader}=      Get Text            ${tableId}/thead/tr/th[${i}]
+        ${results}=         Run Keyword And Return Status       Should Be Equal     ${currHeader}       ${header}
+        ${headerIndex}=     IF      "${results}"=="True"        Set Variable        ${i}
+        IF      "${results}"=="True"        BREAK
+    END
+    IF      "${headerIndex}"=="-1"          Fail        \n\nThere was no header found with the name ${header} in the table ${tableId}...
+    [Return]        ${headerIndex}
+
+Table_Get Row Index
