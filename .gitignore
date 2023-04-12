@@ -1,2 +1,8 @@
 /venv/
 /.idea/
+/__pycache__/
+log.html
+output.xml
+report.html
+.gitignore
+libraries/__pycache__/webDriver.cpython-310.pyc
