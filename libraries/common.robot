@@ -28,7 +28,7 @@ Login As Admin
     Input Text                          //*[@name="username"]           ${ADMIN_USERNAME}
     Input Text                          //*[@name="password"]           ${ADMIN_PASSWORD}
     Click Element                       //*[@value="Log In"]
-    Wait Until Element Is Visible       //h1[.="Accounts Overview"]
+    Wait Until Element Is Visible       //h1[.="Accounts Overview"]     error=Login failed... Server may not be responding
 
 Logout
     Wait Until Element Is Visible       //a[.="Log Out"]
