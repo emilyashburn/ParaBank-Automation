@@ -3,7 +3,7 @@ Library             SeleniumLibrary
 Resource            ../libraries/common.robot
 
 Suite Setup         TEST Setup
-#Suite Teardown      Close All Browsers
+Suite Teardown      Close All Browsers
 
 #Test Setup          Go To Parabank Login Page
 #Test Teardown       Logout
