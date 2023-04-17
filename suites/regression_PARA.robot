@@ -22,15 +22,17 @@ TC-PARA-002 Login and Logout of ParaBank
     Logout
     log to console      \nLogged out successfully.\n
 
-TC-PARA-003
-    #// This testcase is testing the flow for opening new accounts.
+TC-PARA-003 Open a New Account from Main Existing Account
+    #// This testcase is testing the flow for opening new accounts, provided that we use the permanent account 13344.
     Login As Admin
-
-    ${accountType}=         Set Variable        SAVINGS
-    ${existingAccount}=     Get Existing Account with More Than $100
-    Go To Page      Open New Account
-    #Open New Account        ${accountType}      ${existingAccount}
-
+    ${accountType}=         Set Variable            SAVINGS
+    ${existingAccount}=     Set Variable            13344
+    Verify Existing Account Has More Than $100      ${existingAccount}     #// 13344 is always the value of the main account
+    Go To Page              Open New Account
+    ${newAccountId}         ${newAccountURL}=       Open New Account        ${accountType}      ${existingAccount}
+    Log To Console          \n\nNew Account ID: ${newAccountId}
+    Log To Console          \n\nNew Account URL: ${newAccountURL}
+    Go To                    ${newAccountURL}
 
 *** Keywords ***
 PARA Setup
