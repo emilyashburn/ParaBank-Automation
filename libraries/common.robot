@@ -1,6 +1,7 @@
 *** Settings ***
 Library         SeleniumLibrary
 Library         OperatingSystem
+Library         String
 Library         webDriver.py
 
 *** Variables ***
@@ -40,7 +41,7 @@ Logout
 Go To Page
     [Arguments]     ${option}
     #// Bottom Left Nav Menu
-    IF                      "${option}"=="Open New Accounts"        Go To Open New Account Page
+    IF                      "${option}"=="Open New Account"        Go To Open New Account Page
     ...     ELSE IF         "${option}"=="Accounts Overview"        Go To Accounts Overview Page
     ...     ELSE IF         "${option}"=="Transfer Funds"           Go To Transfer Funds Page
     ...     ELSE IF         "${option}"=="Bill Pay"                 Go To Bill Pay Page
@@ -61,8 +62,8 @@ Go To Open New Account Page
 Go To Accounts Overview Page
     Click Element                       //a[.="Accounts Overview"]
     Wait Until Element Is Visible       //h1[.="Accounts Overview"]
-    #// There will ALWAYS be one account in the Overview, so wait until that third TR row loads in.
-    Wait Until Element Is Visible       //*[@id="accountTable"]//tr[3]//a
+    #// There will ALWAYS be one account in the Overview, so wait until that first TR row with a value in the Account column loads in.
+    Wait Until Element Is Visible       //*[@id="accountTable"]//tr[1]//a
 
 Go To Transfer Funds Page
     Click Element                       //a[.="Transfer Funds"]
@@ -112,20 +113,21 @@ Open New Account
     [Arguments]     ${accountType}      ${existingAccount}
     Select Account Type             ${accountType}
     Select Option From Dropdown     //*[@id="fromAccountId"]        ${existingAccount}
+    Click Open New Account
     ${newAccountId}=                Get Text                        //*[@id="newAccountId"]
-    ${newAccountUrl}=               Get Element Attribute           //*[@id="newAccountId"]@href
+    ${newAccountUrl}=               Get Element Attribute           //*[@id="newAccountId"]     attribute=href
     [Return]                        ${newAccountId}     ${newAccountUrl}
 
 Select Account Type
     #// Two valid options: CHECKING or SAVINGS
     [Arguments]     ${accountType}
     Select Option From Dropdown     //*[@id="type"]     ${accountType}
+    #// Wanted to verify the option's attribute selected="selected", but that does not work on the Open New Account page
 
 Select Option From Dropdown
     [Arguments]     ${xpath}      ${option}
     Wait and Click                      ${xpath}
     Wait and Click                      ${xpath}//option[contains(.,"${option}")]
-    Wait Until Element Is Visible       ${xpath}//option[contains(.,"${option}")][@selected="selected"]
 
 Click Open New Account
     Wait and Click                      //*[@type="submit"]
@@ -133,14 +135,17 @@ Click Open New Account
 
 ############ Accounts Overview ############
 
-Get Existing Account with More Than $100
+Verify Existing Account Has More Than $100
+    #// Find the existing account provided and ensure it has a balance of more than $100
+    [Arguments]     ${accountNumber}
     Go To Accounts Overview Page
-    ${accountCount}=        Get Count of Existing Accounts
     ${col}=     Table_Get Column Index      Available Amount        //*[@id="accountTable"]
-    FOR         ${i}      IN RANGE      1       ${accountCount}+1
-        Log to Console      \n Account place: ${i}
+    ${row}=     Table_Get Row Index         ${accountNumber}        Account         //*[@id="accountTable"]
+    ${availableBalance}=        Get Text                //*[@id="accountTable"]//tbody/tr[${row}]/td[${col}]
+    ${availableBalance}=        Fetch From Right        ${availableBalance}     $       #// Get rid of $ to compare
+    IF  ${availableBalance} < 100
+        Fail        Account ${accountNumber} does NOT have more than $100...
     END
-    Log To Console          \n\n Column index: ${col}!!!!!!!!!!
 
 Get Count of Existing Accounts
     ${accountCount}=        Get Element Count        //*[@id="accountTable"]//tr//a
@@ -167,3 +172,16 @@ Table_Get Column Index
     [Return]        ${headerIndex}
 
 Table_Get Row Index
+    #// The only table Parabank has is for the Accounts Overview page.
+    [Arguments]     ${text}     ${columnHeader}     ${tableId}
+    ${rowCount}=        Get Element Count       ${tableId}//tbody/tr[not(contains(.,"Total"))]      #// Counts num of rows and excludes final row for "Total"
+    ${colIndex}=        Table_Get Column Index      ${columnHeader}     ${tableId}
+    ${rowIndex}=        Set Variable            -1
+    FOR     ${i}            IN RANGE            1       ${rowCount}+1
+        ${cellText}=        Get Text       ${tableId}//tbody/tr[${i}][not(contains(.,"Total"))]/td[${colIndex}]/a
+        ${results}=         Run Keyword and Return Status       Should Be Equal         ${cellText}     ${text}
+        ${rowIndex}=        IF      "${results}"=="True"        Set Variable        ${i}
+        Run Keyword If      "${results}"=="True"                Exit For Loop
+    END
+    IF      "${rowIndex}"=="-1"          Fail        \n\nThere was no row found containing the text ${text} in the table ${tableId}...
+    [Return]        ${rowIndex}
