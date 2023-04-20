@@ -126,11 +126,6 @@ Select Account Type
     #// Wanted to verify the option's attribute selected="selected", but that does not work on the Open New Account page
     Select Option From Dropdown     //*[@id="type"]     ${accountType}
 
-Select Option From Dropdown
-    [Arguments]     ${xpath}      ${option}
-    Wait and Click                      ${xpath}
-    Wait and Click                      ${xpath}//option[contains(.,"${option}")]
-
 Click Open New Account
     Wait and Click                      //*[@type="submit"]
     Wait Until Element Is Visible       //*[.="Account Opened!"]
@@ -161,9 +156,17 @@ Get Count of Existing Accounts
 
 Transfer Funds From
     [Arguments]     ${sourceAccount}        ${amount}       ${destinationAccount}
+    Verify Account Has More Than            ${amount}       ${sourceAccount}
     Go To Page      Transfer Funds
     Input Text      //*[@id="amount"]       ${amount}
-    
+    Select Option From Dropdown         //*[@id="fromAccountId"]        ${sourceAccount}
+    Select Option From Dropdown         //*[@id="fromAccountId"]        ${destinationAccount}
+    Click Transfer Button
+    Wait Until Element Is Visible       //p[contains(.,"${amount} has been transferred from account #${sourceAccount} to account #${destinationAccount}")]
+
+Click Transfer Button
+    Click Element       //*[@value="Transfer"]
+    Wait Until Element Is Visible       //*[.="Transfer Complete!"]
 
 ################ Functions ################
 
@@ -188,7 +191,8 @@ Table_Get Column Index
 Table_Get Row Index
     #// The only table Parabank has is for the Accounts Overview page.
     [Arguments]     ${text}     ${columnHeader}     ${tableId}
-    ${rowCount}=        Get Element Count       ${tableId}//tbody/tr[not(contains(.,"Total"))]      #// Counts num of rows and excludes final row for "Total"
+    Wait Until Element Is Visible       ${tableId}//tr[1]//a
+    ${rowCount}=        Get Element Count           ${tableId}//tbody/tr[not(contains(.,"Total"))]      #// Counts num of rows and excludes final row for "Total"
     ${colIndex}=        Table_Get Column Index      ${columnHeader}     ${tableId}
     ${rowIndex}=        Set Variable            -1
     FOR     ${i}            IN RANGE            1       ${rowCount}+1
@@ -199,6 +203,11 @@ Table_Get Row Index
     END
     IF      "${rowIndex}"=="-1"          Fail        \n\nThere was no row found containing the text ${text} in the table ${tableId}...
     [Return]        ${rowIndex}
+
+Select Option From Dropdown
+    [Arguments]     ${xpath}      ${option}
+    Wait and Click                      ${xpath}
+    Wait and Click                      ${xpath}//option[contains(.,"${option}")]
 
 Remove $ From Amount
     [Arguments]     ${amount}
