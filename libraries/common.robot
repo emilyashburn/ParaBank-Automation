@@ -108,21 +108,23 @@ Go To Admin Page
 ########### Open New Accounts ############
 
 Open New Account
-    #// In order to make a new account, we need to know what type of an account to make.
-    #// We also need to pull $100 from an existing account.
-    [Arguments]     ${accountType}      ${existingAccount}
-    Select Account Type             ${accountType}
-    Select Option From Dropdown     //*[@id="fromAccountId"]        ${existingAccount}
+    #// In order to make a new account, we need to know the source account has the appropriate funds.Login As Admin
+    #// We also need to know what type of an account to make.
+    [Arguments]     ${accountType}      ${sourceAccount}
+    Verify Account Has More Than        $100.00      ${sourceAccount}
+    Go To Page                          Open New Account
+    Select Account Type                 ${accountType}
+    Select Option From Dropdown         //*[@id="fromAccountId"]        ${sourceAccount}
     Click Open New Account
-    ${newAccountId}=                Get Text                        //*[@id="newAccountId"]
-    ${newAccountUrl}=               Get Element Attribute           //*[@id="newAccountId"]     attribute=href
-    [Return]                        ${newAccountId}     ${newAccountUrl}
+    ${newAccountId}=                    Get Text                        //*[@id="newAccountId"]
+    ${newAccountUrl}=                   Get Element Attribute           //*[@id="newAccountId"]     attribute=href
+    [Return]                            ${newAccountId}     ${newAccountUrl}
 
 Select Account Type
     #// Two valid options: CHECKING or SAVINGS
     [Arguments]     ${accountType}
-    Select Option From Dropdown     //*[@id="type"]     ${accountType}
     #// Wanted to verify the option's attribute selected="selected", but that does not work on the Open New Account page
+    Select Option From Dropdown     //*[@id="type"]     ${accountType}
 
 Select Option From Dropdown
     [Arguments]     ${xpath}      ${option}
@@ -135,21 +137,33 @@ Click Open New Account
 
 ############ Accounts Overview ############
 
-Verify Existing Account Has More Than $100
-    #// Find the existing account provided and ensure it has a balance of more than $100
-    [Arguments]     ${accountNumber}
-    Go To Accounts Overview Page
-    ${col}=     Table_Get Column Index      Available Amount        //*[@id="accountTable"]
-    ${row}=     Table_Get Row Index         ${accountNumber}        Account         //*[@id="accountTable"]
-    ${availableBalance}=        Get Text                //*[@id="accountTable"]//tbody/tr[${row}]/td[${col}]
-    ${availableBalance}=        Fetch From Right        ${availableBalance}     $       #// Get rid of $ to compare
-    IF  ${availableBalance} < 100
-        Fail        Account ${accountNumber} does NOT have more than $100...
+Verify Account Has More Than
+    #// Find the existing account provided and ensure it has a balance of more than ${amount}
+    [Arguments]     ${amount}       ${accountNumber}
+    #// Get rid of the $ to compare amounts later
+    ${amount}=      Remove $ From Amount        ${amount}
+    Go To Page      Accounts Overview Page
+    #// Find account in table and get current Available Balance
+    ${col}=         Table_Get Column Index      Available Amount        //*[@id="accountTable"]
+    ${row}=         Table_Get Row Index         ${accountNumber}        Account         //*[@id="accountTable"]
+    ${availableBalance}=        Get Text                    //*[@id="accountTable"]//tbody/tr[${row}]/td[${col}]
+    #// Get rid of the $ to compare amounts
+    ${availableBalance}=        Remove $ From Amount        ${availableBalance}
+    IF  ${availableBalance} < ${amount}
+        Fail        Account ${accountNumber} does NOT have more than ${amount}...
     END
 
 Get Count of Existing Accounts
     ${accountCount}=        Get Element Count        //*[@id="accountTable"]//tr//a
     [Return]                ${accountCount}
+
+######## Transfer Funds #############
+
+Transfer Funds From
+    [Arguments]     ${sourceAccount}        ${amount}       ${destinationAccount}
+    Go To Page      Transfer Funds
+    Input Text      //*[@id="amount"]       ${amount}
+    
 
 ################ Functions ################
 
@@ -185,3 +199,8 @@ Table_Get Row Index
     END
     IF      "${rowIndex}"=="-1"          Fail        \n\nThere was no row found containing the text ${text} in the table ${tableId}...
     [Return]        ${rowIndex}
+
+Remove $ From Amount
+    [Arguments]     ${amount}
+    ${amount}=      Fetch From Right        ${amount}       $
+    [Return]        ${amount}
