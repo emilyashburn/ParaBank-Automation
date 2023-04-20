@@ -29,10 +29,10 @@ TC-PARA-003 Open a New Account from Main Existing Account
     ${existingAccount}=     Set Variable            13344
     Verify Existing Account Has More Than $100      ${existingAccount}     #// 13344 is always the value of the main account
     Go To Page              Open New Account
-    ${newAccountId}         ${newAccountURL}=       Open New Account        ${accountType}      ${existingAccount}
-    Log To Console          \n\nNew Account ID: ${newAccountId}
-    Log To Console          \n\nNew Account URL: ${newAccountURL}
-    Go To                    ${newAccountURL}
+    ${newSavingsAccountId}         ${newSavingsAccountURL}=       Open New Account        ${accountType}      ${existingAccount}
+    Log To Console          \n\nNew Account ID: ${newSavingsAccountId}
+    Log To Console          \n\nNew Account URL: ${newSavingsAccountURL}
+    Go To                    ${newSavingsAccountURL}
 
 *** Keywords ***
 PARA Setup
