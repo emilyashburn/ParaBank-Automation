@@ -137,7 +137,7 @@ Verify Account Has More Than
     [Arguments]     ${amount}       ${accountNumber}
     #// Get rid of the $ to compare amounts later
     ${amount}=      Remove $ From Amount        ${amount}
-    Go To Page      Accounts Overview Page
+    Go To Page      Accounts Overview
     #// Find account in table and get current Available Balance
     ${col}=         Table_Get Column Index      Available Amount        //*[@id="accountTable"]
     ${row}=         Table_Get Row Index         ${accountNumber}        Account         //*[@id="accountTable"]
