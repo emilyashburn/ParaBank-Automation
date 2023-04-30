@@ -110,8 +110,9 @@ Go To Admin Page
 Open New Account
     #// In order to make a new account, we need to know the source account has the appropriate funds.Login As Admin
     #// We also need to know what type of an account to make.
-    [Arguments]     ${accountType}      ${sourceAccount}
-    Verify Account Has More Than        $100.00      ${sourceAccount}
+    [Arguments]     ${accountType}      ${sourceAccount}        ${minAmount}
+    ${minAmount}=                       Get Min Amount to Open New Account
+    Verify Account Has More Than        ${minAmount}      ${sourceAccount}
     Go To Page                          Open New Account
     Select Account Type                 ${accountType}
     Select Option From Dropdown         //*[@id="fromAccountId"]        ${sourceAccount}
@@ -119,6 +120,16 @@ Open New Account
     ${newAccountId}=                    Get Text                        //*[@id="newAccountId"]
     ${newAccountUrl}=                   Get Element Attribute           //*[@id="newAccountId"]     attribute=href
     [Return]                            ${newAccountId}     ${newAccountUrl}
+
+Get Min Amount to Open New Account
+    #// From Issue #8, bank account min to open new account has increased from $100 to $1000.
+    #// This keyword fixes that change.
+    Go To Page          Open New Account
+    ${minAmount}=       Get Text        //*[.="Open New Account"]//following-sibling::form//p[contains(.,"$")]
+    ${minAmount}=       Fetch From Right        ${minAmount}        $
+    ${minAmount}=       Fetch From Left         ${minAmount}        ${SPACE}
+    Remove , From Amount        ${minAmount}
+    [Return]        ${minAmount}
 
 Select Account Type
     #// Two valid options: CHECKING or SAVINGS
@@ -135,15 +146,13 @@ Click Open New Account
 Verify Account Has More Than
     #// Find the existing account provided and ensure it has a balance of more than ${amount}
     [Arguments]     ${amount}       ${accountNumber}
-    #// Get rid of the $ to compare amounts later
-    ${amount}=      Remove $ From Amount        ${amount}
     Go To Page      Accounts Overview
     #// Find account in table and get current Available Balance
     ${col}=         Table_Get Column Index      Available Amount        //*[@id="accountTable"]
     ${row}=         Table_Get Row Index         ${accountNumber}        Account         //*[@id="accountTable"]
-    ${availableBalance}=        Get Text                    //*[@id="accountTable"]//tbody/tr[${row}]/td[${col}]
-    #// Get rid of the $ to compare amounts
+    ${availableBalance}=        Get Text        //*[@id="accountTable"]//tbody/tr[${row}]/td[${col}]
     ${availableBalance}=        Remove $ From Amount        ${availableBalance}
+    ${amount}=      Remove , From Amount        ${amount}
     IF  ${availableBalance} < ${amount}
         Fail        Account ${accountNumber} does NOT have more than ${amount}...
     END
@@ -156,17 +165,29 @@ Get Count of Existing Accounts
 
 Transfer Funds From
     [Arguments]     ${sourceAccount}        ${amount}       ${destinationAccount}
-    Verify Account Has More Than            ${amount}       ${sourceAccount}
+    Verify Account Has More Than        ${amount}       ${sourceAccount}
     Go To Page      Transfer Funds
-    Input Text      //*[@id="amount"]       ${amount}
+    #// Choose source account
     Select Option From Dropdown         //*[@id="fromAccountId"]        ${sourceAccount}
-    Select Option From Dropdown         //*[@id="fromAccountId"]        ${destinationAccount}
+    #// Choose destination account
+    Select Option From Dropdown         //*[@id="toAccountId"]        ${destinationAccount}
+    Input Amount        ${amount}
     Click Transfer Button
-    Wait Until Element Is Visible       //p[contains(.,"${amount} has been transferred from account #${sourceAccount} to account #${destinationAccount}")]
+    #// Verify transfer completed successfully
+    Verify Successful Transfer      ${amount}       ${sourceAccount}        ${destinationAccount}
 
 Click Transfer Button
     Click Element       //*[@value="Transfer"]
     Wait Until Element Is Visible       //*[.="Transfer Complete!"]
+
+Input Amount
+    [Arguments]     ${amount}
+    ${xpath}=       Set Variable        //*[@id="amount"]
+    Input Text      ${xpath}            ${amount}
+
+Verify Successful Transfer
+    [Arguments]     ${amount}       ${sourceAccount}        ${destinationAccount}
+    Wait Until Element Is Visible       //p[contains(.,"${amount} has been transferred from account #${sourceAccount} to account #${destinationAccount}")]
 
 ################ Functions ################
 
@@ -212,4 +233,9 @@ Select Option From Dropdown
 Remove $ From Amount
     [Arguments]     ${amount}
     ${amount}=      Fetch From Right        ${amount}       $
+    [Return]        ${amount}
+
+Remove , From Amount
+    [Arguments]     ${amount}
+    ${amount}=      Replace String      ${amount}       ,       ${EMPTY}
     [Return]        ${amount}
