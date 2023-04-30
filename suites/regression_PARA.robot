@@ -25,14 +25,25 @@ TC-PARA-002 Login and Logout of ParaBank
 TC-PARA-003 Open a New Account from Main Existing Account
     #// This testcase is testing the flow for opening new accounts, provided that we use the permanent account 13344.
     Login As Admin
-    ${accountType}=         Set Variable            SAVINGS
-    ${existingAccount}=     Set Variable            13344
-    Verify Existing Account Has More Than $100      ${existingAccount}     #// 13344 is always the value of the main account
-    Go To Page              Open New Account
-    ${newSavingsAccountId}         ${newSavingsAccountURL}=       Open New Account        ${accountType}      ${existingAccount}
+    ${accountType}=         Set Variable                    SAVINGS
+    ${existingAccount}=     Set Variable                    13344
+    ${newSavingsAccountId}  ${newSavingsAccountURL}=        Open New Account        ${accountType}      ${existingAccount}
     Log To Console          \n\nNew Account ID: ${newSavingsAccountId}
-    Log To Console          \n\nNew Account URL: ${newSavingsAccountURL}
-    Go To                    ${newSavingsAccountURL}
+    Log To Console          \nNew Account URL: ${newSavingsAccountURL}
+
+TC-PARA-004 Transfer Funds from One Account To Another Account
+    #// This testcase is testing the flow for transfering funds from a specifed account to another account.
+    ${amount}=              Set Variable        10.00
+    ${sourceAccountId}=     Set Variable        13344
+    Login As Admin
+
+    #//Step 1:  Create a second bank account (destination account)
+    ${accountType}=         Set Variable                    SAVINGS
+    ${minAmount}=           Get Min Amount to Open New Account
+    ${newSavingsAccountId}  ${newSavingsAccountURL}=        Open New Account        ${accountType}      ${sourceAccountId}      ${minAmount}
+
+    #//Step 2:  Attempt to make the transfer of funds and verify successful transfer
+    Transfer Funds From     ${sourceAccountId}        ${amount}     ${newSavingsAccountId}
 
 *** Keywords ***
 PARA Setup

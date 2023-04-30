@@ -108,26 +108,34 @@ Go To Admin Page
 ########### Open New Accounts ############
 
 Open New Account
-    #// In order to make a new account, we need to know what type of an account to make.
-    #// We also need to pull $100 from an existing account.
-    [Arguments]     ${accountType}      ${existingAccount}
-    Select Account Type             ${accountType}
-    Select Option From Dropdown     //*[@id="fromAccountId"]        ${existingAccount}
+    #// In order to make a new account, we need to know the source account has the appropriate funds.Login As Admin
+    #// We also need to know what type of an account to make.
+    [Arguments]     ${accountType}      ${sourceAccount}        ${minAmount}
+    ${minAmount}=                       Get Min Amount to Open New Account
+    Verify Account Has More Than        ${minAmount}      ${sourceAccount}
+    Go To Page                          Open New Account
+    Select Account Type                 ${accountType}
+    Select Option From Dropdown         //*[@id="fromAccountId"]        ${sourceAccount}
     Click Open New Account
-    ${newAccountId}=                Get Text                        //*[@id="newAccountId"]
-    ${newAccountUrl}=               Get Element Attribute           //*[@id="newAccountId"]     attribute=href
-    [Return]                        ${newAccountId}     ${newAccountUrl}
+    ${newAccountId}=                    Get Text                        //*[@id="newAccountId"]
+    ${newAccountUrl}=                   Get Element Attribute           //*[@id="newAccountId"]     attribute=href
+    [Return]                            ${newAccountId}     ${newAccountUrl}
+
+Get Min Amount to Open New Account
+    #// From Issue #8, bank account min to open new account has increased from $100 to $1000.
+    #// This keyword fixes that change.
+    Go To Page          Open New Account
+    ${minAmount}=       Get Text        //*[.="Open New Account"]//following-sibling::form//p[contains(.,"$")]
+    ${minAmount}=       Fetch From Right        ${minAmount}        $
+    ${minAmount}=       Fetch From Left         ${minAmount}        ${SPACE}
+    Remove , From Amount        ${minAmount}
+    [Return]        ${minAmount}
 
 Select Account Type
     #// Two valid options: CHECKING or SAVINGS
     [Arguments]     ${accountType}
-    Select Option From Dropdown     //*[@id="type"]     ${accountType}
     #// Wanted to verify the option's attribute selected="selected", but that does not work on the Open New Account page
-
-Select Option From Dropdown
-    [Arguments]     ${xpath}      ${option}
-    Wait and Click                      ${xpath}
-    Wait and Click                      ${xpath}//option[contains(.,"${option}")]
+    Select Option From Dropdown     //*[@id="type"]     ${accountType}
 
 Click Open New Account
     Wait and Click                      //*[@type="submit"]
@@ -135,21 +143,51 @@ Click Open New Account
 
 ############ Accounts Overview ############
 
-Verify Existing Account Has More Than $100
-    #// Find the existing account provided and ensure it has a balance of more than $100
-    [Arguments]     ${accountNumber}
-    Go To Accounts Overview Page
-    ${col}=     Table_Get Column Index      Available Amount        //*[@id="accountTable"]
-    ${row}=     Table_Get Row Index         ${accountNumber}        Account         //*[@id="accountTable"]
-    ${availableBalance}=        Get Text                //*[@id="accountTable"]//tbody/tr[${row}]/td[${col}]
-    ${availableBalance}=        Fetch From Right        ${availableBalance}     $       #// Get rid of $ to compare
-    IF  ${availableBalance} < 100
-        Fail        Account ${accountNumber} does NOT have more than $100...
+Verify Account Has More Than
+    #// Find the existing account provided and ensure it has a balance of more than ${amount}
+    [Arguments]     ${amount}       ${accountNumber}
+    Go To Page      Accounts Overview
+    #// Find account in table and get current Available Balance
+    ${col}=         Table_Get Column Index      Available Amount        //*[@id="accountTable"]
+    ${row}=         Table_Get Row Index         ${accountNumber}        Account         //*[@id="accountTable"]
+    ${availableBalance}=        Get Text        //*[@id="accountTable"]//tbody/tr[${row}]/td[${col}]
+    ${availableBalance}=        Remove $ From Amount        ${availableBalance}
+    ${amount}=      Remove , From Amount        ${amount}
+    IF  ${availableBalance} < ${amount}
+        Fail        Account ${accountNumber} does NOT have more than ${amount}...
     END
 
 Get Count of Existing Accounts
     ${accountCount}=        Get Element Count        //*[@id="accountTable"]//tr//a
     [Return]                ${accountCount}
+
+######## Transfer Funds #############
+
+Transfer Funds From
+    [Arguments]     ${sourceAccount}        ${amount}       ${destinationAccount}
+    Verify Account Has More Than        ${amount}       ${sourceAccount}
+    Go To Page      Transfer Funds
+    #// Choose source account
+    Select Option From Dropdown         //*[@id="fromAccountId"]        ${sourceAccount}
+    #// Choose destination account
+    Select Option From Dropdown         //*[@id="toAccountId"]        ${destinationAccount}
+    Input Amount        ${amount}
+    Click Transfer Button
+    #// Verify transfer completed successfully
+    Verify Successful Transfer      ${amount}       ${sourceAccount}        ${destinationAccount}
+
+Click Transfer Button
+    Click Element       //*[@value="Transfer"]
+    Wait Until Element Is Visible       //*[.="Transfer Complete!"]
+
+Input Amount
+    [Arguments]     ${amount}
+    ${xpath}=       Set Variable        //*[@id="amount"]
+    Input Text      ${xpath}            ${amount}
+
+Verify Successful Transfer
+    [Arguments]     ${amount}       ${sourceAccount}        ${destinationAccount}
+    Wait Until Element Is Visible       //p[contains(.,"${amount} has been transferred from account #${sourceAccount} to account #${destinationAccount}")]
 
 ################ Functions ################
 
@@ -174,7 +212,8 @@ Table_Get Column Index
 Table_Get Row Index
     #// The only table Parabank has is for the Accounts Overview page.
     [Arguments]     ${text}     ${columnHeader}     ${tableId}
-    ${rowCount}=        Get Element Count       ${tableId}//tbody/tr[not(contains(.,"Total"))]      #// Counts num of rows and excludes final row for "Total"
+    Wait Until Element Is Visible       ${tableId}//tr[1]//a
+    ${rowCount}=        Get Element Count           ${tableId}//tbody/tr[not(contains(.,"Total"))]      #// Counts num of rows and excludes final row for "Total"
     ${colIndex}=        Table_Get Column Index      ${columnHeader}     ${tableId}
     ${rowIndex}=        Set Variable            -1
     FOR     ${i}            IN RANGE            1       ${rowCount}+1
@@ -185,3 +224,18 @@ Table_Get Row Index
     END
     IF      "${rowIndex}"=="-1"          Fail        \n\nThere was no row found containing the text ${text} in the table ${tableId}...
     [Return]        ${rowIndex}
+
+Select Option From Dropdown
+    [Arguments]     ${xpath}      ${option}
+    Wait and Click                      ${xpath}
+    Wait and Click                      ${xpath}//option[contains(.,"${option}")]
+
+Remove $ From Amount
+    [Arguments]     ${amount}
+    ${amount}=      Fetch From Right        ${amount}       $
+    [Return]        ${amount}
+
+Remove , From Amount
+    [Arguments]     ${amount}
+    ${amount}=      Replace String      ${amount}       ,       ${EMPTY}
+    [Return]        ${amount}
