@@ -1,6 +1,6 @@
 # ParaBank Automation Project
 
-Using Robot Framework (which is built on Python), user tasks and end-to-end flows for the site [ParaBank](https://parabank.parasoft.com/parabank/index.htm) are automated using libraries like Selenium (more to come later!).
+Using Robot Framework, I have automated user processes and end-to-end flows for the site [ParaBank](https://parabank.parasoft.com/parabank/index.htm) using libraries like Selenium.
 
 ## Tools
 
