@@ -1,6 +1,7 @@
 *** Settings ***
 Library             SeleniumLibrary
 Resource            ../libraries/common.robot
+Resource            ../libraries/api.robot
 
 Suite Setup         PARA Setup
 Suite Teardown      Close All Browsers
@@ -14,6 +15,11 @@ Suite Teardown      Close All Browsers
 TC-PARA-001 Hello, World!
     #// This testcase is only testing that the Test/Suite Setup runs fine.
     Log To Console          \nHello, world!\n
+    #API_Clean Database
+    #API_Get Admin Info
+    API_Get Bank Account
+
+
 
 TC-PARA-002 Login and Logout of ParaBank
     #// This testcase is testing the login and logout features.
