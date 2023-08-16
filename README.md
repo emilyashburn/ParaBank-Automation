@@ -20,9 +20,9 @@ pip install -r requirements.txt
 ## Usage
 In order to run the test cases, we need to select which test suite we want to run. For example, if you want to run the entire regression_PARA.robot suite:
 ```bash
-robot suites\regression_PARA.robot
+robot TestSuites\regression_PARA.robot
 ```
 Use this command if you want to only run the first test case in the regression_PARA.robot suite:
 ```bash
-robot -t *001* suites\regression_PARA.robot
+robot -t *001* TestSuites\regression_PARA.robot
 ```
