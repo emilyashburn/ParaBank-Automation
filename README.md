@@ -8,14 +8,17 @@ Using Robot Framework, I have automated user processes and end-to-end flows for 
 [![Generic badge](https://img.shields.io/badge/RobotFramework-6.0.2-<COLOR>.svg)](https://shields.io/)
 
 ## Installation
-- Clone this repository onto your computer and open a PowerShell window in that directory. I named my directory "parabankAutomation".
-- To open a PowerShell window in a directory, be sure you're inside of your "parabankAutomation" folder and press ALT + SHIFT + RIGHT CLICK and click "Open PowerShell window here"
-
-Use the package manager [pip](https://pip.pypa.io/en/stable/) in this PowerShell window to install all of the packages you need from the requirements.txt (last updated on 04/14/2023)
-
+- Install PyCharm
+- Open PyCharm and select "Get From VCS" in order to clone this repo onto your machine.
+- Paste this into the URL field, then click Clone
 ```bash
-pip install -r requirements.txt
+https://github.com/emilyashburn/ParaBank-Automation.git
 ```
+- A Virtual Environment prompt will pop up. Select "OK" to create a Virtual Environment for the project.
+
+  ✨ Now you have an exact copy of my working environment! ✨
+
+
 
 ## Usage
 In order to run the test cases, we need to select which test suite we want to run. For example, if you want to run the entire regression_PARA.robot suite:
