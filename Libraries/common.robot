@@ -2,7 +2,7 @@
 Library         SeleniumLibrary
 Library         OperatingSystem
 Library         String
-Library         webDriver.py
+Library         webdriver.py
 
 *** Variables ***
 ${DEFAULT_TIMEOUT}      15s
@@ -10,11 +10,14 @@ ${PARABANK_URL}         https://parabank.parasoft.com/parabank/index.htm
 ${ADMIN_USERNAME}       john
 ${ADMIN_PASSWORD}       demo
 ${browserType}          chrome
-${env}                  UAT
+${env}                  https://parabank.parasoft.com/parabank/index.htm
 
 *** Keywords ***
 
 Launch Browser
+    [Documentation]    This keyword installs the latest webdriver chosen (Chrome or Firefox | defaulted to Chrome) and
+    ...     opens the browser with the chosen ENV (or URL), sets the default Selenium Timeout, and maximizes the
+    ...     browser.
     # Make the cmd line argument all lowercase (to avoid minor fails)
     ${browserType}=     Convert To Lower Case        ${browserType}
 
@@ -25,7 +28,7 @@ Launch Browser
     IF          "${browserType}" == "chrome"
         ${chrome_options}=      create_chrome_options
         ${driverPath}=          Set Variable        ${EXEC_DIR}${/}Webdrivers${/}chromedriver.exe
-        append to environment variable    PATH      ${driverPath}
+        Append To Environment Variable    PATH      ${driverPath}
         Open Browser    url=${env}  browser=${browserType}  options=${chrome_options}   executable_path=${driverPath}
     ELSE IF     "${browserType}" == "firefox"
     # TODO: add firefox options
@@ -36,8 +39,6 @@ Launch Browser
 
     Set Selenium Timeout                ${DEFAULT_TIMEOUT}
     Maximize Browser Window
-
-
 
 
 ################# Logins #################
