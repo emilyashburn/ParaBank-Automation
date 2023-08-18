@@ -28,9 +28,9 @@ https://github.com/emilyashburn/ParaBank-Automation.git
 ## Usage
 In order to run the test cases, we need to select which test suite we want to run. For example, if you want to run the entire regression_PARA.robot suite:
 ```bash
-robot TestSuites\regression_PARA.robot
+robot Tests\regression_PARA.robot
 ```
 Use this command if you want to only run the first test case in the regression_PARA.robot suite in FireFox:
 ```bash
-robot --variable browserType:firefox --variable -t *001* TestSuites\regression_PARA.robot
+robot --variable browserType:firefox --variable -t *001* Tests\regression_PARA.robot
 ```

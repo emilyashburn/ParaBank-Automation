@@ -2,7 +2,7 @@
 Library         SeleniumLibrary
 Library         OperatingSystem
 Library         String
-Library         webdriver.py
+Library         Webdrivers.py
 
 *** Variables ***
 ${DEFAULT_TIMEOUT}      15s
@@ -40,20 +40,6 @@ Launch Browser
     Set Selenium Timeout                ${DEFAULT_TIMEOUT}
     Maximize Browser Window
 
-
-################# Logins #################
-
-Login As Admin
-    Wait Until Element Is Visible       //h2[.="Customer Login"]
-    Input Text                          //*[@name="username"]           ${ADMIN_USERNAME}
-    Input Text                          //*[@name="password"]           ${ADMIN_PASSWORD}
-    Click Element                       //*[@value="Log In"]
-    Wait Until Element Is Visible       //h1[.="Accounts Overview"]     error=Login failed... Server may not be responding
-
-Logout
-    Wait Until Element Is Visible       //a[.="Log Out"]
-    Click Element                       //a[.="Log Out"]
-    Wait Until Element Is Visible       //h2[.="Customer Login"]
 
 ############### Navigation ###############
 

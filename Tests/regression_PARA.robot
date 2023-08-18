@@ -1,7 +1,8 @@
 *** Settings ***
 Library             SeleniumLibrary
-Resource            ../libraries/common.robot
-Resource            ../libraries/api.robot
+Resource            ../Resources/Common.robot
+Resource            ../Resources/Api.robot
+Resource            ../Resources/PageObjects/KeywordDefinitionFiles/LoginKeywords.robot
 
 Suite Setup         PARA Setup
 Suite Teardown      Close All Browsers
