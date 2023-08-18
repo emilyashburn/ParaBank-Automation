@@ -2,13 +2,18 @@
 
 Using Robot Framework, I have automated user processes and end-to-end flows for the site [ParaBank](https://parabank.parasoft.com/parabank/index.htm) using libraries like Selenium.
 
-## Tools
+## Tools & Notable Libraries
 
 [![Generic badge](https://img.shields.io/badge/Python-3.10.10-<COLOR>.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/RobotFramework-6.0.2-<COLOR>.svg)](https://shields.io/)
 
+Webdrivermanager (to autoupdate webdrivers for Chrome and FireFox) by [Rasjani](https://github.com/MarketSquare/webdrivermanager)
+
+SeleniumLibrary by [robotframework.org](https://robotframework.org/SeleniumLibrary/SeleniumLibrary.html)
+
+
 ## Installation
-- Install PyCharm
+- Install PyCharm (this video can be helpful! https://youtu.be/srgZ3eQ6erw)
 - Open PyCharm and select "Get From VCS" in order to clone this repo onto your machine.
 - Paste this into the URL field, then click Clone
 ```bash
