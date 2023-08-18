@@ -25,7 +25,7 @@ In order to run the test cases, we need to select which test suite we want to ru
 ```bash
 robot TestSuites\regression_PARA.robot
 ```
-Use this command if you want to only run the first test case in the regression_PARA.robot suite:
+Use this command if you want to only run the first test case in the regression_PARA.robot suite in FireFox:
 ```bash
-robot -t *001* TestSuites\regression_PARA.robot
+robot --variable browserType:firefox --variable -t *001* TestSuites\regression_PARA.robot
 ```
