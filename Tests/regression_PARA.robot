@@ -20,19 +20,13 @@ TC-PARA-001 Hello, World!
     #API_Get Admin Info
     API_Get Bank Account
 
-TC-PARA-002 Login and Logout of ParaBank
-    #// This testcase is testing the login and logout features.
-    Login As Admin
-    Log To Console      \nLogged in successfully!\n
-    Logout
-    log to console      \nLogged out successfully.\n
 
 TC-PARA-003 Open a New Account from Main Existing Account
     #// This testcase is testing the flow for opening new accounts, provided that we use the permanent account 13344.
     Login As Admin
     ${accountType}=         Set Variable                    SAVINGS
     ${existingAccount}=     Set Variable                    13344
-    ${newSavingsAccountId}  ${newSavingsAccountURL}=        Open New Account        ${accountType}      ${existingAccount}
+    ${newSavingsAccountId}  ${newSavingsAccountURL}=        Open New Account        ${accountType}      ${existingAccount}      100
     Log To Console          \n\nNew Account ID: ${newSavingsAccountId}
     Log To Console          \nNew Account URL: ${newSavingsAccountURL}
 
@@ -53,5 +47,3 @@ TC-PARA-004 Transfer Funds from One Account To Another Account
 *** Keywords ***
 PARA Setup
     Launch Browser
-    #Open Chrome Browser        ${PARABANK_URL}
-    #install_latest_chromedriver

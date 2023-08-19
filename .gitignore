@@ -7,3 +7,4 @@ report.html
 .gitignore
 Resources/__pycache__/webDriver.cpython-310.pyc
 selenium-screenshot-*.png
+geckodriver-*.log

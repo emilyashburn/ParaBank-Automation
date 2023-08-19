@@ -6,9 +6,6 @@ Library         Webdrivers.py
 
 *** Variables ***
 ${DEFAULT_TIMEOUT}      15s
-${PARABANK_URL}         https://parabank.parasoft.com/parabank/index.htm
-${ADMIN_USERNAME}       john
-${ADMIN_PASSWORD}       demo
 ${browserType}          chrome
 ${env}                  https://parabank.parasoft.com/parabank/index.htm
 
