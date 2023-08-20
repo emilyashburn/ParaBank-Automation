@@ -2,13 +2,18 @@
 Library         SeleniumLibrary
 Library         OperatingSystem
 Library         String
-Library         webdriver.py
+Library         Webdrivers.py
+Resource        ../Resources/PageObjects/AccountServices_AboutUsPage.robot
+Resource        ../Resources/PageObjects/AccountServices_AccountsOverviewPage.robot
+Resource        ../Resources/PageObjects/AccountServices_BillPayPage.robot
+Resource        ../Resources/PageObjects/AccountServices_FindTransactionsPage.robot
+Resource        ../Resources/PageObjects/AccountServices_OpenNewAccountPage.robot
+Resource        ../Resources/PageObjects/AccountServices_RequestLoanPage.robot
+Resource        ../Resources/PageObjects/AccountServices_TransferFundsPage.robot
+Resource        ../Resources/PageObjects/AccountServices_UpdateContactInfoPage.robot
 
 *** Variables ***
 ${DEFAULT_TIMEOUT}      15s
-${PARABANK_URL}         https://parabank.parasoft.com/parabank/index.htm
-${ADMIN_USERNAME}       john
-${ADMIN_PASSWORD}       demo
 ${browserType}          chrome
 ${env}                  https://parabank.parasoft.com/parabank/index.htm
 
@@ -40,21 +45,6 @@ Launch Browser
     Set Selenium Timeout                ${DEFAULT_TIMEOUT}
     Maximize Browser Window
 
-
-################# Logins #################
-
-Login As Admin
-    Wait Until Element Is Visible       //h2[.="Customer Login"]
-    Input Text                          //*[@name="username"]           ${ADMIN_USERNAME}
-    Input Text                          //*[@name="password"]           ${ADMIN_PASSWORD}
-    Click Element                       //*[@value="Log In"]
-    Wait Until Element Is Visible       //h1[.="Accounts Overview"]     error=Login failed... Server may not be responding
-
-Logout
-    Wait Until Element Is Visible       //a[.="Log Out"]
-    Click Element                       //a[.="Log Out"]
-    Wait Until Element Is Visible       //h2[.="Customer Login"]
-
 ############### Navigation ###############
 
 Go To Page
@@ -76,37 +66,37 @@ Go To Page
 
 Go To Open New Account Page
     Click Element                       //a[.="Open New Account"]
-    Wait Until Element Is Visible       //h1[.="Open New Account"]
+    Wait Until Element Is Visible       ${header_openNewAccountTitle}
 
 Go To Accounts Overview Page
     Click Element                       //a[.="Accounts Overview"]
-    Wait Until Element Is Visible       //h1[.="Accounts Overview"]
+    Wait Until Element Is Visible       ${header_accountsOverviewPageTitle}
     #// There will ALWAYS be one account in the Overview, so wait until that first TR row with a value in the Account column loads in.
-    Wait Until Element Is Visible       //*[@id="accountTable"]//tr[1]//a
+    Wait Until Element Is Visible       ${table_accountTable}
 
 Go To Transfer Funds Page
     Click Element                       //a[.="Transfer Funds"]
-    Wait Until Element Is Visible       //h1[.="Transfer Funds"]
+    Wait Until Element Is Visible       ${header_transferFundsPageTitle}
 
 Go To Bill Pay Page
     Click Element                       //a[.="Bill Pay"]
-    Wait Until Element Is Visible       //h1[.="Bill Payment Service"]
+    Wait Until Element Is Visible       ${header_billPayPageTitle}
 
 Go To Find Transactions Page
     Click Element                       //a[.="Find Transactions"]
-    Wait Until Element Is Visible       //h1[.="Find Transactions"]
+    Wait Until Element Is Visible       ${header_findTransactionsPageTitle}
 
 Go To Update Contact Info Page
     Click Element                       //a[.="Update Contact Info"]
-    Wait Until Element Is Visible       //h1[.="Update Profile"]
+    Wait Until Element Is Visible       ${header_updateContactInfoPageTitle}
 
 Go To Request Loan Page
     Click Element                       //a[.="Request Loan"]
-    Wait Until Element Is Visible       //h1[contains(.,"Apply for a Loan")]
+    Wait Until Element Is Visible       ${header_requestLoanPageTitle}
 
 Go To About Us Page
     Click Element                       //*[@class="leftmenu"]//a[.="About Us"]
-    Wait Until Element Is Visible       //h1[.="ParaSoft Demo Website"]
+    Wait Until Element Is Visible       ${header_aboutUsPageTitle}
 
 Go To Services Page
     Click Element                       //*[@class="leftmenu"]//a[.="Services"]

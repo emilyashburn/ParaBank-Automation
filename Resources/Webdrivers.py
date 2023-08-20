@@ -28,4 +28,6 @@ def create_chrome_options():
     # Avoids 'Do you want chrome to save your password?' pop up within Chrome
     options.add_experimental_option('prefs', {"credentials_enable_service": False,
                                               'profile': {'password_manager_enabled': False}})
+    # Removes "DevTools listening on ..." text from console
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
     return options
