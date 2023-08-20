@@ -1,6 +1,6 @@
 *** Settings ***
 Library         SeleniumLibrary
-Resource        ../Resources/PageObjects/KeywordDefinitionFiles/LoginKeywords.robot
+Resource        ../Resources/PageObjects/LoginKeywords.robot
 Variables       ../Resources/PageObjects/TestData/Logins.py
 Resource        ../Resources/Common.robot
 

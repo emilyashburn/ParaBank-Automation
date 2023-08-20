@@ -2,26 +2,19 @@
 Library             SeleniumLibrary
 Resource            ../Resources/Common.robot
 Resource            ../Resources/Api.robot
-Resource            ../Resources/PageObjects/KeywordDefinitionFiles/LoginKeywords.robot
+Resource            ../Resources/PageObjects/LoginKeywords.robot
 
 Suite Setup         PARA Setup
 Suite Teardown      Close All Browsers
-
 # Test Setup          Go To Parabank Login Page
-# Test Teardown       Logout
+Test Teardown       Logout
 
 *** Variables ***
 
 *** Test Cases ***
-TC-PARA-001 Hello, World!
-    #// This testcase is only testing that the Test/Suite Setup runs fine.
-    Log To Console          \nHello, world!\n
-    #API_Clean Database
-    #API_Get Admin Info
-    API_Get Bank Account
 
 
-TC-PARA-003 Open a New Account from Main Existing Account
+TC-PARA-001 Open a New Account from Main Existing Account
     #// This testcase is testing the flow for opening new accounts, provided that we use the permanent account 13344.
     Login As Admin
     ${accountType}=         Set Variable                    SAVINGS
@@ -30,7 +23,7 @@ TC-PARA-003 Open a New Account from Main Existing Account
     Log To Console          \n\nNew Account ID: ${newSavingsAccountId}
     Log To Console          \nNew Account URL: ${newSavingsAccountURL}
 
-TC-PARA-004 Transfer Funds from One Account To Another Account
+TC-PARA-002 Transfer Funds from One Account To Another Account
     #// This testcase is testing the flow for transfering funds from a specifed account to another account.
     ${amount}=              Set Variable        10.00
     ${sourceAccountId}=     Set Variable        13344

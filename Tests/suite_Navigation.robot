@@ -1,6 +1,7 @@
 *** Settings ***
 Library             SeleniumLibrary
-Resource            ../libraries/common.robot
+Resource            ../Resources/Common.robot
+Resource            ../Resources/PageObjects/LoginKeywords.robot
 
 Suite Setup         TEST Setup
 Suite Teardown      Close All Browsers
@@ -15,6 +16,7 @@ Suite Teardown      Close All Browsers
 
 TC-TEST-001
     #// This testcase is testing the nav keywords
+    Login As Admin
     Go To Page      Open New Account
     Go To Page      Accounts Overview
     Go To Page      Transfer Funds
@@ -32,4 +34,4 @@ TC-TEST-001
 
 *** Keywords ***
 TEST Setup
-    Open Chrome Browser        ${PARABANK_URL}
+    Launch Browser
