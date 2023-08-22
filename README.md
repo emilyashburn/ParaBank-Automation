@@ -2,27 +2,20 @@
 
 Using Robot Framework, I have automated user processes and end-to-end flows for the site [ParaBank](https://parabank.parasoft.com/parabank/index.htm) using libraries like Selenium.
 
-## Tools & Notable Libraries
+## Preconditions
 
-[![Generic badge](https://img.shields.io/badge/Python-3.10.10-<COLOR>.svg)](https://shields.io/)
-[![Generic badge](https://img.shields.io/badge/RobotFramework-6.0.2-<COLOR>.svg)](https://shields.io/)
+A precondition for running the tests is having Robot Framework and SeleniumLibrary installed, which also requires Python. Robot Framework installation instructions cover both Robot and Python installations, and SeleniumLibrary has its own installation instructions.
 
-Webdrivermanager (to autoupdate webdrivers for Chrome and FireFox) by [Rasjani](https://github.com/MarketSquare/webdrivermanager)
-
-SeleniumLibrary by [robotframework.org](https://robotframework.org/SeleniumLibrary/SeleniumLibrary.html)
-
+You can install Robot Framework and SeleniumLibrary along with its dependencies using pip package manager. Once you have pip installed, all you need to do is run this command to obtain the rest of the project requirements:
+```bash
+pip install -r requirements.txt
+```
 
 ## Installation
-- Install PyCharm (this video can be helpful! https://youtu.be/srgZ3eQ6erw)
-- Open PyCharm and select "Get From VCS" in order to clone this repo onto your machine.
-- Paste this into the URL field, then click Clone
+Clone the project with this URL:
 ```bash
 https://github.com/emilyashburn/ParaBank-Automation.git
 ```
-- A Virtual Environment prompt will pop up. Select "OK" to create a Virtual Environment for the project.
-
-  ✨ Now you have an exact copy of my working environment! ✨
-
 
 
 ## Usage
@@ -34,3 +27,13 @@ Use this command if you want to only run the first test case in the regression_P
 ```bash
 robot --variable browserType:firefox --variable -t *001* Tests\regression_PARA.robot
 ```
+
+
+## Tools & Notable Libraries
+
+[![Generic badge](https://img.shields.io/badge/Python-3.10.10-<COLOR>.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/RobotFramework-6.0.2-<COLOR>.svg)](https://shields.io/)
+
+Webdrivermanager (to autoupdate webdrivers for Chrome and FireFox) by [Rasjani](https://github.com/MarketSquare/webdrivermanager)
+
+SeleniumLibrary by [robotframework.org](https://robotframework.org/SeleniumLibrary/SeleniumLibrary.html)
