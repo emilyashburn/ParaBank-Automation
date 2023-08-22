@@ -25,9 +25,16 @@ robot Tests\regression_PARA.robot
 ```
 Use this command if you want to only run the first test case in the regression_PARA.robot suite in FireFox:
 ```bash
-robot --variable browserType:firefox --variable -t *001* Tests\regression_PARA.robot
+robot -t *001* Tests\regression_PARA.robot
 ```
 
+## Using different browsers
+The browser that is used is controlled by ${browserType} variable defined in the Resource.robot resource file. Chrome browser is used by default, but that can be easily overridden from the command line:
+
+```bash
+robot --variable browserType:Chrome tests
+robot --variable browserType:Firefox tests
+```
 
 ## Tools & Notable Libraries
 
