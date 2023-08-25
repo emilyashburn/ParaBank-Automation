@@ -12,6 +12,7 @@ Resource        ../Resources/PageObjects/AccountServices_RequestLoanPage.robot
 Resource        ../Resources/PageObjects/AccountServices_TransferFundsPage.robot
 Resource        ../Resources/PageObjects/AccountServices_UpdateContactInfoPage.robot
 
+
 *** Variables ***
 ${DEFAULT_TIMEOUT}      15s
 ${browserType}          chrome
