@@ -10,11 +10,11 @@ Using Robot Framework, I have automated user processes and end-to-end flows for 
 - Webdrivermanager (to autoupdate webdrivers for Chrome and FireFox) by [Rasjani](https://github.com/MarketSquare/webdrivermanager)
 - SeleniumLibrary by [robotframework.org](https://robotframework.org/SeleniumLibrary/SeleniumLibrary.html)
 
-- Locator Techniques
+- Locator Techniques (with xPaths)
 - Selenium Webdriver (ChromeDriver & GeckoDriver specifically)
 - Regression Testing
 - Page Object Model
-- GIT Version Control
+- GIT Version Control (via GitHub and SourceTree)
 - Data-Driven Tests
 - Keyword-Driven Tests
 
