@@ -7,6 +7,7 @@ Using Robot Framework, I have automated user processes and end-to-end flows for 
 [![Generic badge](https://img.shields.io/badge/Python-3.10.10-<COLOR>.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/RobotFramework-6.0.2-<COLOR>.svg)](https://shields.io/)
 
+- Created framework automation process from scratch
 - Webdrivermanager (to autoupdate webdrivers for Chrome and FireFox) by [Rasjani](https://github.com/MarketSquare/webdrivermanager)
 - SeleniumLibrary by [robotframework.org](https://robotframework.org/SeleniumLibrary/SeleniumLibrary.html)
 
